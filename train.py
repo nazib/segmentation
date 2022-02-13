@@ -13,6 +13,7 @@ import sys
 
 
 def trainer(data_dir,epochs,size,batch_size,lr,val_percent):
+    val_percent = val_percent/100.0
     ## Defining network architecture
     image_size, n_class = [size,size,3], 1
     structure = [64,128,256,512] 
@@ -36,7 +37,7 @@ def trainer(data_dir,epochs,size,batch_size,lr,val_percent):
     
     results = model.fit(train_im, train_label, validation_split=0.1, batch_size=batch_size, epochs=epochs, 
                     callbacks=[earlystopper, checkpointer])
-    print("Traning Complete")
+    return "Training Complete"
 
 def get_args():
     parser = argparse.ArgumentParser(description='Train the UNet on images and target masks',
@@ -65,7 +66,7 @@ if __name__ == "__main__":
                   size = args.dimension,
                   batch_size=args.batchsize,
                   lr=args.lr,
-                  val_percent=args.val / 100)
+                  val_percent=args.val)
     except KeyboardInterrupt:
         print('Training Inturrepted')
         #logging.info('Training Inturrepted')

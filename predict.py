@@ -46,6 +46,7 @@ def predict(data_dir,image_dim,model_dir,with_label):
         fname = os.path.join("predictions","Dice.txt")
         acc_file = open(fname,"w")
         acc_file.write(np.mean(all_dice))
+        return "Predicted successfully.Please Check Prediction Directory"
     else:
         test_im = load_dataset(data_dir,isTest=True)
         preds = model.predict(test_im, verbose=1)
@@ -57,6 +58,7 @@ def predict(data_dir,image_dim,model_dir,with_label):
             seg = seg.resize((512, 512),resample=Image.NEAREST)
             fname = f'predict_{i}.tiff'
             seg.save(os.path.join('predictions',fname))
+        return "Predicted successfully.Please Check Prediction Directory"
 
 def get_args():
     parser = argparse.ArgumentParser(description='Train the UNet on images and target masks',
