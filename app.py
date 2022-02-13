@@ -30,7 +30,4 @@ def model_predict():
 
 if __name__ == "__main__":
     port = int(os.getenv('PORT', 8080))
-    #http_server = WSGIServer(('0.0.0.0', port), create_app('production'))
-    #http_server.serve_forever()
-    #app.logger.info("App started ")
     app.run(host='0.0.0.0', port=port)
