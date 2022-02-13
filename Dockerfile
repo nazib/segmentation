@@ -1,4 +1,5 @@
 FROM tensorflow/tensorflow:2.2.0
+FROM python:3.8
 # python3.6 comes with this
 
 RUN apt-get update
