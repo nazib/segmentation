@@ -11,12 +11,18 @@ from tqdm import tqdm
 import PIL
 
 
-def load_dataset(path,IMG_HEIGHT=128, IMG_WIDTH=128, IMG_CHANNELS=3):
+def load_dataset(path,IMG_HEIGHT=128, IMG_WIDTH=128, IMG_CHANNELS=3,isTest=False):
 
-    filenames = glob.glob(os.path.join(path,'tiles','*.jpg'))
-    labels = glob.glob(os.path.join(path,'annotations','*.png'))
-    X_train = np.zeros((len(filenames), IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.float32)
-    Y_train = np.zeros((len(labels), IMG_HEIGHT, IMG_WIDTH,1), dtype=np.float32)
+    if isTest is False:
+        filenames = glob.glob(os.path.join(path,'tiles','*.jpg'))
+        labels = glob.glob(os.path.join(path,'annotations','*.png'))
+        X_train = np.zeros((len(filenames), IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.float32)
+        Y_train = np.zeros((len(labels), IMG_HEIGHT, IMG_WIDTH,1), dtype=np.float32)
+    else:
+        filenames = glob.glob(os.path.join(path,'*.jpg'))
+        labels = filenames
+        X_train = np.zeros((len(filenames), IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.float32)
+        Y_train = np.zeros((len(filenames), IMG_HEIGHT, IMG_WIDTH,1), dtype=np.float32)
 
     for n, (img_name,label_name) in tqdm(enumerate(zip(filenames,labels)), total=len(filenames)):
     
@@ -26,15 +32,21 @@ def load_dataset(path,IMG_HEIGHT=128, IMG_WIDTH=128, IMG_CHANNELS=3):
         img = np.asarray(img)        
         #Append image to numpy array for train dataset
         X_train[n] = img
-        
+    
         #Read corresponding mask files iteratively
-        mask = Image.open(label_name).convert('L')
-        mask = mask.resize((IMG_HEIGHT, IMG_WIDTH),resample=Image.NEAREST)
-        mask = np.asarray(mask)    
-        mask[mask>0] =1.0
-        mask = np.expand_dims(mask,axis=2)
-        Y_train[n] = mask
-
-    return X_train,Y_train
+        if isTest is False:
+            mask = Image.open(label_name).convert('L')
+            mask = mask.resize((IMG_HEIGHT, IMG_WIDTH),resample=Image.NEAREST)
+            mask = np.asarray(mask)    
+            mask[mask>0] =1.0
+            mask = np.expand_dims(mask,axis=2)
+            Y_train[n] = mask
+        else:
+            continue
+    
+    if isTest is False:
+        return X_train,Y_train
+    else:
+        return X_train
 
         

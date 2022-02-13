@@ -14,7 +14,7 @@ class Unet:
         self.n_filters =filters
         self.Lr=lr
 
-    def myConv(self,x_in, nf, strides=1,rate=1):
+    def myConv(self,x_in, nf, strides=1):
         x_out = tf.keras.layers.Conv2D(nf,kernel_size=3, padding='same',kernel_initializer='he_normal',strides=strides)(x_in)
         x_out = tf.keras.layers.LeakyReLU(0.2)(x_out)
         x_out = tf.keras.layers.BatchNormalization()(x_out)
@@ -42,7 +42,9 @@ class Unet:
     def createModel(self):
 
         self.inp = tf.keras.Input(shape=self.im_size)
-        #self.Encoder_layer_in = Input(shape=self.vol_size+(4,))
+        
+        ### Instead of using maxpool I decided to use strided (stride=2) convolution
+        ### Strided convolution gives more weight parameters than maxpool, hence performance improves  
         self.Encoder_layer0 = self.myConv(self.inp, self.n_filters[0], 2)
         self.Encoder_layer1 = self.myConv(self.Encoder_layer0,self.n_filters[1], 2)
         self.Encoder_layer2 = self.myConv(self.Encoder_layer1,self.n_filters[2], 2)

@@ -27,9 +27,12 @@ def trainer(data_dir,epochs,size,batch_size,lr,val_percent):
     train_label = data_label[:train_len]
 
     earlystopper = EarlyStopping(patience=15, verbose=1)
+    
     today = datetime.datetime.now()
     model_name = f'unet_{today.strftime("%d")}_{today.strftime("%m")}_{today.strftime("%Y")}.h5'
-    checkpointer = ModelCheckpoint(model_name, verbose=1, save_best_only=True)
+    model_path = os.path.join('chkpoints',model_name)
+    
+    checkpointer = ModelCheckpoint(model_path, verbose=1, save_best_only=True)
     
     results = model.fit(train_im, train_label, validation_split=0.1, batch_size=batch_size, epochs=epochs, 
                     callbacks=[earlystopper, checkpointer])
